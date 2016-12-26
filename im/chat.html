@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>Web im Demo</title>
+	<link rel="stylesheet" href="css/base.css"/>
+	<link rel="stylesheet" href="css/animate.css"/>
+	<link rel="stylesheet" href="css/jquery-ui.css"/>
+	<link rel="stylesheet" href="css/contextMenu/jquery.contextMenu.css"/>
+	<link rel="stylesheet" href="css/main.css"/>
+	<link rel="stylesheet" href="css/chat.css"/>
+	<link rel="stylesheet" href="css/uiKit.css"/>
+	<link rel="stylesheet" href="css/CEmojiEngine.css"/>
+</head>
+<body>
+	<div class="chat radius5px" id="mainPanel">
+		<div class="chat-panel bottom-left-radius bottom-right-radius">
+			<div class="left-panel bottom-left-radius f-fl" id="left-panel">
+				<!--<div class="hide loading" id="loading"></div>-->
+				<!--<div class="m-devices hide">正在使用云信web版</div>-->
+				<div class="panel" id="switchPanel">
+					<a style="margin-left: 12px" class="box-sizing tc m-unread panel_tab cur" data-type="sessions">
+						<span class="im-glyphicon im-glyphicon-sesion"></span>
+					</a>
+					<!--<b class="u-unread hide">0</b>-->
+					<!--<a class="box-sizing tc panel_tab" data-type="friends"><span class="icon icon-friend"></span></a>-->
+					<a class="box-sizing tc panel_tab" data-type="teams">
+						<span class="im-glyphicon im-glyphicon-group"></span>
+					</a>
+					<div class="panel-search">
+						<span class="im-glyphicon im-glyphicon-search"></span>
+						<input type="text" class="input-sm form-control" placeholder="搜索群组">
+					</div>
+				</div>
+				<div class="item" id="sessionsWrap" data-type="sessions">		<!-- 最近联系人 -->
+					<div class="list">
+						<div class="m-panel">
+							<div class="panel_item m-sysMsg" id="showNotice">
+								<div class="panel_avatar">
+									<img class="panel_image" src="images/notice.png" alt="消息中心"/>
+								</div>
+								<div class="panel_text">
+									<p class="panel_single-row">消息中心</p>
+								</div>
+								<b class="count j-sysMsgCount hide"></b>
+							</div>
+						</div>
+						<div id="sessions">
+							<p>正在获取最近联系人...</p>
+						</div>
+					</div>
+				</div>
+				<div class="item hide" id="friendsWrap" data-type="friends">
+					<!-- 通讯录 -->
+					<div class="list">
+						<div class="m-panel">
+							<div class="panel_item" id="addFriend">
+								<div class="panel_avatar">
+									<img  class="panel_image" src="images/addFriend.png" alt="添加好友"/>
+								</div>
+								<div class="panel_text">
+									<p class="panel_single-row">添加好友</p>
+								</div>
+							</div>
+						</div>
+						<!--<div id="friends">-->
+						<div id="organization">
+							<p>正在获取通讯录...</p>
+						</div>
+					</div>
+				</div>
+				<div class="item hide" id="teamsWrap" data-type="teams">	<!-- 群 -->
+					<div class="list" >
+						<div class="teams m-panel" id="teams">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="right-view bottom-right-radius f-fl" id="chatView">
+				<div class="title" id="chatTitle">
+					<span class="session-to-name" id="nickName"></span>
+					<div class="hide" id="intoGroup">
+						<span class="into-group-text">进入群组</span>
+						<span class="im-glyphicon im-glyphicon-intoGroup" id="intoGroupIcon"></span>
+					</div>
+					<!--<div class="cloudMsg tc radius4px" data-record-id="" id="cloudMsg"><i class="icon icon-cloud"></i><p>云记录</p></div>-->
+					<!--<span class="i-close " id="iClose"></span>-->
+					<a class="i-close im-glyphicon im-glyphicon-close" id="iClose"></a>
+				</div>
+                <!--<div class="page_toolbar hide" data-team-id="" id="teamInfo">-->
+                    <!--<a>-->
+                        <!--<em class="transition03"><i class="im-glyphicon im-glyphicon-showRight"></i></em>-->
+                    <!--</a>-->
+                <!--</div>-->
+				<div class="team-info hide tc" data-team-id="" id="teamInfo">
+					<i class="im-glyphicon im-glyphicon-showRight"></i>
+				</div>
+				<div class="view-box f-fl">
+					<div class="chat-content box-sizing" id="chatContent">
+
+					</div>
+					<div class="chat-mask"></div>
+					<div class="chat-editor bottom-right-radius box-sizing" id="chatEditor" data-disabled="1">
+						<div class="input-area">
+							<div class="func-btn">
+								<div id="emojiTag" class="m-emojiTag"></div>
+								<a class="im-glyphicon im-glyphicon-emoticon f-emotion" id="showEmoji"></a>
+								<a class="im-glyphicon im-glyphicon-image f-img" ></a>
+								<span id="chooseFileBtn">
+								<a class="im-glyphicon im-glyphicon-attachment" data-type="file"></a>
+								</span>
+								<a class="im-glyphicon im-glyphicon-at f-at"></a>
+
+								<form action="#" id="uploadForm">
+								<input multiple="multiple" type="file" name="file" id="uploadFile" class="hide"/>
+								</form>
+							</div>
+							<textarea id="messageText" class="msg-input box-sizing"></textarea>
+							<!--rows="1" autofocus="autofocus" maxlength="500"-->
+						</div>
+						<a class="btn-send bottom-right-radius" id="sendBtn">发送</a>
+                        <!--<a class="btn-send1 bottom-right-radius" id="sendBtn">发送</a>-->
+						<!--<div id="emojiTag" class="m-emojiTag"></div>-->
+						<!--<a class="u-emoji" id="showEmoji"></a>-->
+						<!--<span class="msg-type" id="chooseFileBtn">-->
+								<!--<a class="icon icon-file" data-type="file"></a>-->
+							<!--</span>-->
+						<!--<form action="#" id="uploadForm">-->
+							<!--<input multiple="multiple" type="file" name="file" id="uploadFile" class="hide"/>-->
+						<!--</form>-->
+						<!--<textarea id="messageText" class="msg-input box-sizing radius5px" rows="1" autofocus="autofocus" maxlength="500"></textarea>-->
+						<!--<a class="btn-send radius5px" id="sendBtn">发送</a>-->
+					</div>
+				</div>
+				<div class="team-member-container f-fl hide" id="teamInfoContainer">
+					<p class="member-title" id="memberTitle">群成员
+					</p>
+					<div class="info-content">
+						<ul id="teamMemberList" class="f-cb">
+
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 云记录 -->
+	<div class="cloud-msg-container hide" id="cloudMsgContainer"></div>
+	<!-- 消息中心 -->
+	<div class="m-notice radius5px hide" id="notice">
+		<div class="title box-sizing">
+			消息中心
+			<i class="icon icon-close j-close"></i>
+			<b class="j-rmAllSysNotice rmAll"></b>
+		</div>
+		<ul class="tab f-cb">
+			<li class="crt" data-value="sys">系统通知</li>
+			<li  data-value="other">自定义通知</li>
+		</ul>
+		<div class="content j-sysMsg">
+		</div>
+		<div class="content j-customSysMsg hide">
+		</div>
+	</div>
+	<!-- 人物信息 -->
+	<div class="m-card hide" id="personCard">
+		<i class="icon icon-close j-close"></i>
+		<div class="uInfo f-cb">
+			<img class="u-icon" src="">
+			<div class="desc">
+				<p class="j-nick nick">超级大饼</p>
+				<img src="" class="j-gender gender">
+				<p><span class="j-username">帐号：caojidabin</span></p>
+				<p><span class="j-nickname">昵称：caojidabin</span></p>
+			</div>
+		</div>
+		<div class="infos">
+			<div class="items alias">
+				<div class="item">备注名</div>
+				<input type="text" class="e-alias ipt" maxlength="16">
+				<a class="j-saveAlias save">保存</a>
+			</div>
+			<!--<div class="items">-->
+			<!--<div class="item">生日</div>-->
+			<!--<div class="j-birth">1990-08-18</div>-->
+			<!--</div>-->
+			<div class="items">
+				<div class="item">手机:</div>
+				<div class="j-tel">18072912974</div>
+			</div>
+			<div class="items">
+				<div class="item">邮箱:</div>
+				<div class="j-email">w8@173.com </div>
+			</div>
+			<!--<div class="items">-->
+			<!--<div class="item">签名</div>-->
+			<!--<div class="j-sign sign">相信真善美,相信真善美相信真善美相信真善美,相信真善美,相信真善美,相信真善美,相信真善美,相信真善美</div>-->
+			<!--</div>-->
+		</div>
+		<ul>
+			<li class="mutelist">消息提醒
+				<div class="u-switch">
+					<img src="images/btn_switch.png">
+					<span class="off">off</span>
+					<span class="on">on</span>
+				</div>
+			</li>
+			<!--<li class="blacklist">黑名单-->
+			<!--<div class="u-switch">-->
+			<!--<img src="images/btn_switch.png">-->
+			<!--<span class="off">off</span>-->
+			<!--<span class="on">on</span>-->
+			<!--</div>-->
+			<!--</li>-->
+			<li class="mute hide" id="setTeamMute">设置禁言
+				<div class="u-switch">
+					<img src="images/btn_switch.png">
+					<span class="off">off</span>
+					<span class="on">on</span>
+				</div>
+			</li>
+		</ul>
+		<div class="btns tc">
+			<!--<button class="btn btn-del radius4px j-del del">删除好友</button>-->
+			<!--<button class="btn btn-cancel radius4px j-add add">加为好友</button>-->
+			<button class="btn btn-ok radius4px j-chat chat">聊天</button>
+		</div>
+	</div>
+	<div id="mask" class="mask hide"></div>
+<script>
+	function IFrameResize(w, h){
+		var obj = parent.document.getElementById("nim_iframe");  //取得父页面IFrame对象
+		var size={};
+		if(w>0)
+			obj.width = w;  //调整父页面中IFrame的高度为此页面的高度
+		if(h>0)
+			obj.height = h;
+		size.width= obj.width;
+		size.height= obj.height;
+		return size;
+	}
+</script>
+
+
+
+
+<script src="3rd/Web_SDK_Base_v2.8.0.js"></script>
+<script src="3rd/Web_SDK_NIM_v2.8.0.js"></script>
+<script src="3rd/jquery-1.11.3.min.js"></script>
+<script src="js/3rd/jquery-ui.min.js"></script>
+<!-- 右键菜单-->
+<script src="js/3rd/contextMenu/jquery.ui.position.js"></script>
+<script src="js/3rd/contextMenu/jquery.contextMenu.js"></script>
+
+<script src="js/web_config.js"></script>
+<script src="js/emoji.js"></script>
+<script src="js/util.js?v=2"></script>
+<script src="js/cache.js?v=2"></script>
+<script src="js/link.js"></script>
+<script src="js/ui.js?v=2"></script>
+<script src="js/widget/uiKit.js?v=2"></script>
+<script src="js/module/base.js"></script>
+<script src="js/module/message.js"></script>
+<script src="js/module/sysMsg.js"></script>
+<script src="js/module/personCard.js"></script>
+<script src="js/module/session.js"></script>
+<script src="js/module/friend.js"></script>
+<script src="js/module/team.js"></script>
+<script src="js/module/cloudMsg.js"></script>
+<script src="js/module/notification.js"></script>
+<script src="js/md5.js"></script>
+<script src="js/main.js?v=2"></script>
+
+</body>
+</html>
