@@ -1,6 +1,6 @@
 
 #banniu
-
+.gitignore
 web_config.js
 webdemo.zip
-/banniu_web/web_app/.idea/workspace.xml
+.idea

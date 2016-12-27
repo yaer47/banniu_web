@@ -25,10 +25,28 @@ YX.fn.initModule = function () {
     this.cloudMsg()
 }
 
+//onchanged
+
+// var element = document.getElementById("mytext");
+// if("\v"=="v") {
+//     element.onpropertychange = webChange;
+// }else{
+//     element.addEventListener("input",webChange,false);
+// }
+// function webChange(){
+//     if(element.value){document.getElementById("test").innerHTML = element.value};
+// }
+
 YX.fn.initBase = function () {
 	// 初始化节点事件
     this.$iClose = $('#iClose')
     this.$iClose.on('click', this.onClose.bind(this))
+    this.$searchInput = $('#searchInput')
+    // this.$searchInput.on('input', this.onInputChanged.bind(this))
+    this.$searchInput.on('focus input', this.onInputChanged.bind(this))
+    this.$resultList = $('#searchResult')
+    this.$resultWrap = $('#resultWrap')
+
 	this.$mask = $('#mask')
     this.$sendBtn = $('#sendBtn')
 	//左上角信息
@@ -80,6 +98,73 @@ YX.fn.initBase = function () {
 
 YX.fn.onClose = function () {
     $("#mainPanel").addClass('hide')
+}
+
+YX.fn.onInputChanged = function (e) {
+    switch(e.type)
+    {
+        case "focus":
+            this.showSearchResult();
+            break;
+        case "input":
+            var c = this.$searchInput.val()
+            var result = this.cache.getSearchTeamList(c)
+            this.updateSearchList(result)
+            break;
+        default:
+    }
+
+}
+
+YX.fn.updateSearchList = function (list) {
+
+    var tmp1 = '<div class="panel_team"><div class="panel_team-title">讨论组</div><ul class="j-normalTeam">',
+        tmp2 = '<div class=" panel_team"><div class="panel_team-title">高级群</div><ul class="j-advanceTeam">',
+        flag1 = false,
+        flag2 = false,
+        html = '',
+        info,
+        teams = list;
+    if (teams && teams.length > 0) {
+        for (var i = 0, l = teams.length; i < l; ++i) {
+            info = this.infoProvider(teams[i],"team");
+            if (info.type === 'normal') {
+                flag1 = true;
+                tmp1 += ['<li class="panel_item '+'" data-gtype="normal" data-type="team" data-account="' + info.teamId + '">',
+                    '<div class="panel_avatar"><img class="panel_image" src="'+info.avatar+'"/></div>',
+                    '<div class="panel_text">',
+                    '<p class="panel_single-row">'+info.nick+'</p>',
+                    '</div>',
+                    '</li>'].join("");
+            } else if (info.type === 'advanced') {
+                flag2 = true;
+                tmp2 += ['<li class="panel_item '+'" data-gtype="advanced" data-type="team" data-account="' + info.teamId + '">',
+                    '<div class="panel_avatar"><img class="panel_image" src="'+info.avatar+'"/></div>',
+                    '<div class="panel_text">',
+                    '<p class="panel_single-row">'+info.nick+'</p>',
+                    '</div>',
+                    '</li>'].join("");
+            }
+        }
+        tmp1 += '</ul></div>';
+        tmp2 += '</ul></div>';
+        if (flag1 && flag2) {
+            html = tmp2 + tmp1;
+        } else if (flag1 && !flag2) {
+            html = tmp1;
+        } else if (!flag1 && flag2) {
+            html = tmp2;
+        } else {
+            html = '<p>暂时还没有群哦</p>';
+        }
+    } else {
+        html = '<p>暂时还没有群哦</p>';
+    }
+    this.$resultList.html(html);
+}
+
+YX.fn.showSearchResult = function (){
+
 }
 
 /**

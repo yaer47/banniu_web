@@ -21,6 +21,10 @@ var Cache = (function(){
 		this.sysMsgs = [];
 		this.customSysMsgs = [];
 		this.sysMsgCount = 0;
+
+		//add
+		this.teamSearchMap = {}
+
 	};
 	/*
 	*公司数据（个人数据， 公司组织架构数据， 公司群数据）
@@ -47,8 +51,10 @@ var Cache = (function(){
 		//this.loadXMLDoc('/work/mobileUserInfo.htm?m=findAllUserAndDept',function(xmlhttp)
 		this.loadXMLDoc('http://localhost:63342/im/js/data.json',function(json)
 		{
+
             var dept= json.allDeptList;
             var allUser= json.allUserList;
+
 			this.setData(this.adeptsKeyList, this.adeptsList,  dept);
 			this.setData(this.usersKeyList, this.usersList,  this.setUserData(allUser, "@1e_80w_80h_1c_0i_1o_80Q_1x_100-1ci.png"));
 
@@ -441,6 +447,9 @@ var Cache = (function(){
 		for (var i = list.length - 1; i >= 0; i--) {
 			item = list[i];
 			this.teamMap[item.teamId] = item;
+			var fullChars = toolPinyin.getFullChars(item.name).toLowerCase()
+			var camelChars = toolPinyin.getCamelChars(item.name)
+			this.teamSearchMap[fullChars]= this.teamSearchMap[camelChars]=item
 		};
 		this.teamlist = list;
 	};
@@ -448,9 +457,22 @@ var Cache = (function(){
 	Cache.prototype.addTeam = function(team) {
 		if(!this.hasTeam(team.teamId)){
 			this.teamMap[team.teamId] = team;
+			var fullChars = toolPinyin.getFullChars(item.name).toLowerCase()
+			var camelChars = toolPinyin.getCamelChars(item.name)
+			this.teamSearchMap[fullChars]= this.teamSearchMap[camelChars]=team
 			this.teamlist.push(team);
 		}
 	};
+
+	Cache.prototype.getSearchTeamList = function (str) {
+		var resultList = []
+		$.each(this.teamSearchMap, function (key, value) {
+			if(!resultList.contains(value))
+				resultList.push(value)
+		})
+		return resultList;
+	}
+
 	Cache.prototype.hasTeam = function(id) {
 		var item;
 		for (var i = this.teamlist.length - 1; i >= 0; i--) {

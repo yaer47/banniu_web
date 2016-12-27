@@ -27,12 +27,12 @@
 					<a class="box-sizing tc panel_tab" data-type="teams">
 						<span class="im-glyphicon im-glyphicon-group"></span>
 					</a>
-					<div class="panel-search">
+					<div class="panel-search panel_tab" data-type="results">
 						<span class="im-glyphicon im-glyphicon-search"></span>
-						<input type="text" class="input-sm form-control" placeholder="搜索群组">
+						<input type="text" id="searchInput" class="form-control" placeholder="搜索群组">
 					</div>
 				</div>
-				<div class="item" id="sessionsWrap" data-type="sessions">		<!-- 最近联系人 -->
+				<div class="item hide" id="sessionsWrap" data-type="sessions">		<!-- 最近联系人 -->
 					<div class="list">
 						<div class="m-panel">
 							<div class="panel_item m-sysMsg" id="showNotice">
@@ -72,6 +72,15 @@
 				<div class="item hide" id="teamsWrap" data-type="teams">	<!-- 群 -->
 					<div class="list" >
 						<div class="teams m-panel" id="teams">
+						</div>
+					</div>
+				</div>
+				<div class="item" id="resultWrap" data-type="results">
+					<!-- 通讯录 -->
+					<div class="list">
+						<!--<div id="friends">-->
+						<div id="searchResult">
+							<p>搜索结果...</p>
 						</div>
 					</div>
 				</div>
@@ -241,13 +250,12 @@
 	}
 </script>
 
-
-
-
 <script src="3rd/Web_SDK_Base_v2.8.0.js"></script>
 <script src="3rd/Web_SDK_NIM_v2.8.0.js"></script>
 <script src="3rd/jquery-1.11.3.min.js"></script>
 <script src="js/3rd/jquery-ui.min.js"></script>
+<script src="js/3rd/toolPinyin.js"></script>
+
 <!-- 右键菜单-->
 <script src="js/3rd/contextMenu/jquery.ui.position.js"></script>
 <script src="js/3rd/contextMenu/jquery.contextMenu.js"></script>
