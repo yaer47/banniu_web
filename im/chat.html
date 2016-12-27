@@ -27,10 +27,10 @@
 					<a class="box-sizing tc panel_tab" data-type="teams">
 						<span class="im-glyphicon im-glyphicon-group"></span>
 					</a>
-					<div class="panel-search panel_tab" data-type="results">
+					<a class="panel-search panel_tab" data-type="results">
 						<span class="im-glyphicon im-glyphicon-search"></span>
 						<input type="text" id="searchInput" class="form-control" placeholder="搜索群组">
-					</div>
+					</a>
 				</div>
 				<div class="item hide" id="sessionsWrap" data-type="sessions">		<!-- 最近联系人 -->
 					<div class="list">
@@ -50,7 +50,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="item hide" id="friendsWrap" data-type="friends">
+				<div class="item" id="friendsWrap" data-type="friends">
 					<!-- 通讯录 -->
 					<div class="list">
 						<div class="m-panel">
@@ -75,11 +75,11 @@
 						</div>
 					</div>
 				</div>
-				<div class="item" id="resultWrap" data-type="results">
+				<div class="item hide" id="resultWrap" data-type="results">
 					<!-- 通讯录 -->
 					<div class="list">
 						<!--<div id="friends">-->
-						<div id="searchResult">
+						<div class="teams m-panel" id="searchResult">
 							<p>搜索结果...</p>
 						</div>
 					</div>

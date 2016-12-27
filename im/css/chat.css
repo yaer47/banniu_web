@@ -56,26 +56,26 @@
 /*}*/
 /*.icon-team-info {*/
     /*background-position: -63px -25px;*/
-/*}*/
+/*} :not(.im-glyphicon-search)*/
 
-.panel_tab:not(.cur) .im-glyphicon{
+.panel_tab .im-glyphicon:not(.im-glyphicon-search){
     font-size: 20px;
     color: #dddddd;
 }
 
-.panel_tab.cur .im-glyphicon{
+.panel_tab.cur .im-glyphicon:not(.im-glyphicon-search){
     font-size: 20px;
     color: #0fc576;
 }
 
-.panel_tab.cur .icon:after {
+.panel_tab.cur .im-glyphicon:after {
     display: inline-block;
     width: 38px;
     height: 8px;
     background: url(../images/icons.png) no-repeat -67px -170px;
     content:' ';
     position: absolute;
-    top: 26px;
+    top: 25px;
     left: 3px;
 }
 
@@ -130,8 +130,7 @@
     color: #555;
     line-height: 1.5;
     padding: 0 0 0 30px;
-    margin-top: 9px;
-    margin-left: 10px;
+    margin: -3px 0 0 2px;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 50px!important;
@@ -148,8 +147,8 @@
 .im-glyphicon-search {
     position: absolute;
     font-size: 14px;
-    margin-left: 19px;
-    margin-top: 14px;
+    margin-left: 13px;
+    padding-top: 2px;
     color: #999;
 }
 

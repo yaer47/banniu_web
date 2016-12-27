@@ -328,23 +328,34 @@ YX.fn.openChatBox = function (account, scene) {
  */
 YX.fn.switchPanel = function (evt) {
     var node
-    if(evt.target.tagName.toLowerCase() === 'span'){
-        node = evt.target.parentNode
-    } else {
-        node = evt.target
-    }
+    // if(evt.target.tagName.toLowerCase() === ('span'||'input')){
+    //     node = evt.target.parentNode
+    // } else {
+    //     node = evt.target
+    // }
+    node = evt.target.parentNode
     $('.panel_tab').removeClass('cur')
     $(node).addClass('cur')
     var type = $(node).data('type')
-    // this.$chatVernier.addClass('hide')
     $('.item[data-type="' + type + '"]').removeClass('hide').siblings('.item').addClass('hide')
     if (type === 'sessions') {
+        this.clearSearchResult()
         this.buildSessions()
     } else if (type === 'friends') {
+        this.clearSearchResult()
         this.buildFriends()
-    } else {
+    } else if (type === 'results') {
+        // this.buildFriends()
+    }else {
+        this.clearSearchResult()
         this.buildTeams()
     }
+}
+
+YX.fn.clearSearchResult = function () {
+    this.$searchInput.val("")
+    this.$resultList.html('<p>暂时还没有群哦</p>');
+
 }
 /**
  * 导航圆点显示

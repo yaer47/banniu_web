@@ -466,8 +466,10 @@ var Cache = (function(){
 
 	Cache.prototype.getSearchTeamList = function (str) {
 		var resultList = []
+		if(str=="")
+			return resultList;
 		$.each(this.teamSearchMap, function (key, value) {
-			if(!resultList.contains(value))
+			if(key.indexOf(str)>-1&&!resultList.contains(value))
 				resultList.push(value)
 		})
 		return resultList;
