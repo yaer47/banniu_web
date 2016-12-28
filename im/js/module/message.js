@@ -49,7 +49,7 @@ YX.fn.message = function () {
     })
     //表情贴图模块
     this.initEmoji()
-    this.atFunc()
+    this.initalAt()
 
 }
 /**

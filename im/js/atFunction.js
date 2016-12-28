@@ -1,14 +1,60 @@
 /**
  * Created by zyy on 2016/12/28.
  */
+
+YX.fn.initalAt = function () {
+    var jeremy = decodeURI("J%C3%A9r%C3%A9my") // Jérémy
+    var names = ["Jacob","Isabella","Ethan","Emma","Michael","Olivia","Alexander","Sophia","William","Ava","Joshua","Emily","Daniel","Madison","Jayden","Abigail","Noah","Chloe","你好","你你你", jeremy, "가"];
+
+    this.at_config = {
+        at: "@",
+        data: names,
+        callbacks: {
+            /*  What to do before insert item's value into inputor.
+
+             @param value [String] content to insert
+             @param $li [jQuery Object] the chosen item */
+            before_insert: function(value, $li) {
+                return value;
+            },
+            // matcher: function(flag, subtext, should_start_with_space) {
+            //         return subtext;
+            // },
+            /* Filter data by matched string.
+             @param query [String] Matched string.
+             @param data [Array] data list
+             @param search_key [String] key char for seaching.
+
+             @return [Array] result data.*/
+            filter: function(query, data, search_key) {
+                var arr=[]
+                for(var i=0;i<data.length;i++){
+                    if((query==""&&data[i].name!="")||data[i].name.indexOf(query) >= 0||data[i].fullname.indexOf(query)>=0)
+                        arr.push(data[i].fullname)
+                }
+                return arr;
+            }
+        }
+    }
+    this.$messageText = $('#messageText').atwho(this.at_config);
+    this.$messageText.caret('pos', 0);
+    this.$messageText.focus().atwho('run');
+}
+
+YX.fn.resetAt = function (data) {
+    this.at_config.data= data;
+    this.at_config.insertTpl= '${name}';
+    this.at_config.displayTpl= "<li>${name}${fullname}</li>";
+    this.$messageText = $('#messageText').atwho(this.at_config);
+    // this.$messageText.caret('pos', 47);
+    // this.$messageText.focus().atwho('run');
+}
+
 YX.fn.atFunc = function () {
     this.$atList = $('#atList')
     this.$showAt = $('#showAt')
     this.$showAt.on('click', this.showAtList.bind(this))
     this.hasShowList = false
-    // this.addAtEvent(document, 'click', function () {
-    //     that.$atList.addClass('hide')
-    // })
 }
 
 YX.fn.showAtList = function (str, e) {
@@ -26,39 +72,13 @@ YX.fn.showAtList = function (str, e) {
 }
 
 YX.fn.onTextAreaInputChanged = function (e) {
-    // if (!isTribe)
-    // {
-    //     return;
-    // }
-    // QString text(document()->toPlainText());
-    // int n = this->textCursor().positionInBlock();
-    // text = text.left(n);
-    // if (hasAt)
-    // {
-    //     int n = text.lastIndexOf("@");
-    //     if (-1 != n)
-    //     {
-    //         QString currStr = text.right(text.length() - n - 1);
-    //         if (!m_atListWidget->showList(currStr, getCursorPoint()))
-    //         {
-    //             m_atListWidget->hide();
-    //         }
-    //     }
-    //     else
-    //     {
-    //         m_atListWidget->hide();
-    //         hasAt = false;
-    //     }
-    //
-    // }
-    // else
-    // {
-    //     if (text.endsWith("@"))
-    //     {
-    //         hasAt = true;
-    //         m_atListWidget->showList("", getCursorPoint());
-    //     }
-    // }
+    var str= this.$messageText.val();
+    if($.trim(this.$messageText.val()).length<=0){
+        this.activateSendBtn(false);
+    }else{
+        this.activateSendBtn(true);
+    }
+    /*
     var str= this.$messageText.val();
     if($.trim(this.$messageText.val()).length<=0){
         this.activateSendBtn(false);
@@ -91,6 +111,7 @@ YX.fn.onTextAreaInputChanged = function (e) {
         }
     }
     console.log('input changed : '+str+"\r\n"+"cursor position :"+ position);
+    */
 }
 
 

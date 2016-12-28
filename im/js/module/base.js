@@ -228,6 +228,18 @@ YX.fn.openChatBox = function (account, scene) {
     }else{
     	//群聊
         info = this.cache.getTeamById(account)
+        this.getTeamMembers(account, function () {
+            var members= this.cache.getTeamMembers(account).members
+            var users= []
+            var data = $.map(members,function(value,i) {
+                var user= this.cache.getUserFromId(value.account),
+                    avatar = user.userIcon?user.userIcon:"images/default-icon.png",
+                    nick = user.workNick,
+                    fullname = user.fullNamePinyin
+                return {'name':nick, 'fullname':fullname, 'icon':avatar};
+            }.bind(this));
+            this.resetAt(data)
+        }.bind(this))
         this.$intoGroup && this.$intoGroup.removeClass('hide')
         this.$teamInfo && this.$teamInfo.removeClass('hide')
         if(info){
