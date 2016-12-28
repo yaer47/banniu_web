@@ -3,16 +3,14 @@
 */
 
 'use strict'
-
 YX.fn.message = function () {
-
     this.$messageText = $('#messageText')
     this.$chooseFileBtn = $('#chooseFileBtn')
     this.$fileInput = $('#uploadFile')
 
  	this.$sendBtn.on('click', this.sendTextMessage.bind(this))
-    this.$messageText.on('keydown', this.inputMessage.bind(this))
-    this.$chooseFileBtn.on('click', 'a', this.chooseFile.bind(this))      
+    this.$messageText.on('keydown input', this.inputMessage.bind(this))
+    this.$chooseFileBtn.on('click', 'a', this.chooseFile.bind(this))
     this.$fileInput.on('change', this.uploadFile.bind(this))
     //消息重发
     this.$chatContent.delegate('.j-resend','click',this.doResend.bind(this))
@@ -51,7 +49,8 @@ YX.fn.message = function () {
     })
     //表情贴图模块
     this.initEmoji()
-    
+    this.atFunc()
+
 }
 /**
  * 处理收到的消息 
@@ -140,6 +139,7 @@ YX.fn.cbShowEmoji = function(result){
 YX.fn.showEmoji = function(){
     this.$emNode._$show()
 }
+
 /*************************************************************************
  * 发送消息逻辑
  * 
@@ -174,6 +174,15 @@ YX.fn.sendTextMessage = function () {
 	    }
 	}
 }
+YX.fn.activateSendBtn = function (isActive) {
+    if(isActive){
+        this.$sendBtn.removeClass('btn-send')
+        this.$sendBtn.addClass('btn-send-active')
+    }else{
+        this.$sendBtn.removeClass('btn-send-active')
+        this.$sendBtn.addClass('btn-send')
+    }
+}
 /**
 * 发送消息完毕后的回调
 * @param error：消息发送失败的原因
@@ -182,6 +191,7 @@ YX.fn.sendTextMessage = function () {
 YX.fn.sendMsgDone = function (error, msg) {
     this.cache.addMsgs(msg)
     this.$messageText.val('')
+    this.activateSendBtn(false);
     this.$chatContent.find('.no-msg').remove()
     var msgHtml = appUI.updateChatContentUI(msg,this.cache)
     this.$chatContent.append(msgHtml).scrollTop(99999)
@@ -190,13 +200,27 @@ YX.fn.sendMsgDone = function (error, msg) {
 
 YX.fn.inputMessage = function (e) {
     var ev = e || window.event
-    if ($.trim(this.$messageText.val()).length > 0) {
-        if (ev.keyCode === 13 && ev.ctrlKey) {
-            this.$messageText.val(this.$messageText.val() + '\r\n')
-        } else if (ev.keyCode === 13 && !ev.ctrlKey) {
-            this.sendTextMessage()
+    switch (ev.type)
+    {
+        case 'keydown':
+        {
+            if ($.trim(this.$messageText.val()).length > 0) {
+                if (ev.keyCode === 13 && ev.ctrlKey) {
+                    this.$messageText.val(this.$messageText.val() + '\r\n')
+                } else if (ev.keyCode === 13 && !ev.ctrlKey) {
+                    this.sendTextMessage()
+                }
+            }
         }
+        break;
+        case 'input':
+        {
+            this.onTextAreaInputChanged(e)
+        }
+        break;
+        default:
     }
+
 }
 // 重发
 YX.fn.doResend = function (evt) {

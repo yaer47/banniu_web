@@ -96,17 +96,11 @@
 					<!--<span class="i-close " id="iClose"></span>-->
 					<a class="i-close im-glyphicon im-glyphicon-close" id="iClose"></a>
 				</div>
-                <!--<div class="page_toolbar hide" data-team-id="" id="teamInfo">-->
-                    <!--<a>-->
-                        <!--<em class="transition03"><i class="im-glyphicon im-glyphicon-showRight"></i></em>-->
-                    <!--</a>-->
-                <!--</div>-->
-				<div class="team-info hide tc" data-team-id="" id="teamInfo">
-					<i class="im-glyphicon im-glyphicon-showRight"></i>
-				</div>
 				<div class="view-box f-fl">
+					<div class="team-info hide tc" data-team-id="" id="teamInfo">
+						<i class="im-glyphicon im-glyphicon-showRight"></i>
+					</div>
 					<div class="chat-content box-sizing" id="chatContent">
-
 					</div>
 					<div class="chat-mask"></div>
 					<div class="chat-editor bottom-right-radius box-sizing" id="chatEditor" data-disabled="1">
@@ -118,27 +112,16 @@
 								<span id="chooseFileBtn">
 								<a class="im-glyphicon im-glyphicon-attachment" data-type="file"></a>
 								</span>
-								<a class="im-glyphicon im-glyphicon-at f-at"></a>
+								<div id="atList" class="at-list hide"></div>
+								<a class="im-glyphicon im-glyphicon-at f-at" id="showAt"></a>
 
 								<form action="#" id="uploadForm">
 								<input multiple="multiple" type="file" name="file" id="uploadFile" class="hide"/>
 								</form>
 							</div>
 							<textarea id="messageText" class="msg-input box-sizing"></textarea>
-							<!--rows="1" autofocus="autofocus" maxlength="500"-->
 						</div>
 						<a class="btn-send bottom-right-radius" id="sendBtn">发送</a>
-                        <!--<a class="btn-send1 bottom-right-radius" id="sendBtn">发送</a>-->
-						<!--<div id="emojiTag" class="m-emojiTag"></div>-->
-						<!--<a class="u-emoji" id="showEmoji"></a>-->
-						<!--<span class="msg-type" id="chooseFileBtn">-->
-								<!--<a class="icon icon-file" data-type="file"></a>-->
-							<!--</span>-->
-						<!--<form action="#" id="uploadForm">-->
-							<!--<input multiple="multiple" type="file" name="file" id="uploadFile" class="hide"/>-->
-						<!--</form>-->
-						<!--<textarea id="messageText" class="msg-input box-sizing radius5px" rows="1" autofocus="autofocus" maxlength="500"></textarea>-->
-						<!--<a class="btn-send radius5px" id="sendBtn">发送</a>-->
 					</div>
 				</div>
 				<div class="team-member-container f-fl hide" id="teamInfoContainer">
@@ -249,7 +232,6 @@
 		return size;
 	}
 </script>
-
 <script src="3rd/Web_SDK_Base_v2.8.0.js"></script>
 <script src="3rd/Web_SDK_NIM_v2.8.0.js"></script>
 <script src="3rd/jquery-1.11.3.min.js"></script>
@@ -261,6 +243,7 @@
 <script src="js/3rd/contextMenu/jquery.contextMenu.js"></script>
 
 <script src="js/web_config.js"></script>
+<!--<script src="js/atFunction.js"></script>-->
 <script src="js/emoji.js"></script>
 <script src="js/util.js?v=2"></script>
 <script src="js/cache.js?v=2"></script>
@@ -268,6 +251,7 @@
 <script src="js/ui.js?v=2"></script>
 <script src="js/widget/uiKit.js?v=2"></script>
 <script src="js/module/base.js"></script>
+<script src="js/atFunction.js"></script>
 <script src="js/module/message.js"></script>
 <script src="js/module/sysMsg.js"></script>
 <script src="js/module/personCard.js"></script>

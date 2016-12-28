@@ -3,12 +3,12 @@
  */
 YX.fn.search = function () {
     this.$searchInput = $('#searchInput')
-    this.$searchInput.on('focus input', this.onInputChanged.bind(this))
+    this.$searchInput.on('focus input', this.onSearchInputChanged.bind(this))
     this.$resultList = $('#searchResult')
     this.addResultEvent()
 }
 
-YX.fn.onInputChanged = function (e) {
+YX.fn.onSearchInputChanged = function (e) {
     switch(e.type)
     {
         case "input":
