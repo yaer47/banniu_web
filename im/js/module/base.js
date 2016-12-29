@@ -416,6 +416,16 @@ YX.fn.infoProvider = function(data,type){
 
             }else{
                 //群组
+                var ids = []
+                var cus = msg.custom
+                if(cus&&cus!=""){
+                    ids = JSON.parse(cus)
+                    ids.contains(userUID)&&info.unread!=0?
+                        info.showAtTip=true:info.showAtTip=false
+                }
+                else{
+                    info.showAtTip=false
+                }
                 var teamInfo = this.cache.getTeamById(msg.target)
                 if(teamInfo){
                     info.nick = teamInfo.name
