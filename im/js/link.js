@@ -416,11 +416,12 @@ SDKBridge.prototype.reSetCurrSession = function(){
 * @param text：发送的消息文本
 * @param callback：回调
 */
-SDKBridge.prototype.sendTextMessage = function (scene, to, text , callback) {
+SDKBridge.prototype.sendTextMessage = function (scene, to, text , custom, callback) {
     this.nim.sendText({
         scene: scene || 'p2p',
         to: to,
         text: text,
+		custom: custom,
         done: callback
     });
 };

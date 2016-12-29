@@ -5,8 +5,10 @@ var YX = function (accid) {
     this.cache = new Cache(this)
     this.cache.initData()
     this.mysdk = new SDKBridge(this, this.cache)
+    this.atIds = []
     this.firstLoadSysMsg = true
     this.isBodyShow = false
+    this.setAtIntoText = false
     this.totalUnread = 0
     this.iframeWidth = 0
 }
@@ -201,7 +203,7 @@ YX.fn.openChatBox = function (account, scene) {
     // this.$leftPanel.find(".chat-mask").addClass("hide")
     // this.$leftPanel.removeClass('hide')
     this.$messageText.val('')
-
+    this.atIds = []
     //根据帐号跟消息类型获取消息数据
     if(scene=="p2p"){
         //info = this.cache.getUserById(account)
@@ -214,6 +216,7 @@ YX.fn.openChatBox = function (account, scene) {
         // }
 
         //try
+
         info = this.cache.getUserFromId(account)
         if(info.id == userUID){
             this.$nickName.text("我的手机")
@@ -228,18 +231,22 @@ YX.fn.openChatBox = function (account, scene) {
     }else{
     	//群聊
         info = this.cache.getTeamById(account)
-        this.getTeamMembers(account, function () {
-            var members= this.cache.getTeamMembers(account).members
-            var users= []
-            var data = $.map(members,function(value,i) {
-                var user= this.cache.getUserFromId(value.account),
-                    avatar = user.userIcon?user.userIcon:"images/default-icon.png",
-                    nick = user.workNick,
-                    fullname = user.fullNamePinyin
-                return {'name':nick, 'fullname':fullname, 'icon':avatar};
-            }.bind(this));
-            this.resetAt(data)
+
+        // var team=this.cache.getTeamMembers(account)
+        //     ,members
+        // if(team){
+        //     members= team.members
+        //     this.resetAt(members)
+        // }else{
+        //     this.getTeamMembers(account, function () {
+        //         members= this.cache.getTeamMembers(account).members
+        //         this.resetAt(members)
+        //     }.bind(this))
+        // }
+        this.getTeamMembers(account, function (members) {
+            this.resetAt(members)
         }.bind(this))
+
         this.$intoGroup && this.$intoGroup.removeClass('hide')
         this.$teamInfo && this.$teamInfo.removeClass('hide')
         if(info){
@@ -265,6 +272,8 @@ YX.fn.openChatBox = function (account, scene) {
 
     }.bind(this));
 }
+
+
  /**
  * 切换左边面板上方tab
  */

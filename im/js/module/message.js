@@ -170,7 +170,10 @@ YX.fn.sendTextMessage = function () {
 	    }else if(text.length===0){
 	        return
 	    } else {
-	        this.mysdk.sendTextMessage(scene, to, text, this.sendMsgDone.bind(this))
+           var costum
+            if(this.atIds.length>0)
+                costum = JSON.stringify(this.atIds);
+	        this.mysdk.sendTextMessage(scene, to, text, costum, this.sendMsgDone.bind(this))
 	    }
 	}
 }
@@ -195,6 +198,7 @@ YX.fn.sendMsgDone = function (error, msg) {
     this.$chatContent.find('.no-msg').remove()
     var msgHtml = appUI.updateChatContentUI(msg,this.cache)
     this.$chatContent.append(msgHtml).scrollTop(99999)
+    this.atIds = []
     $('#uploadForm').get(0).reset()
 }
 
@@ -208,7 +212,12 @@ YX.fn.inputMessage = function (e) {
                 if (ev.keyCode === 13 && ev.ctrlKey) {
                     this.$messageText.val(this.$messageText.val() + '\r\n')
                 } else if (ev.keyCode === 13 && !ev.ctrlKey) {
-                    this.sendTextMessage()
+                    if($('#at-view-64').css('display')== 'none'){
+                        this.sendTextMessage()
+                    }
+                    else{
+                        this.insertAtToText()
+                    }
                 }
             }
         }

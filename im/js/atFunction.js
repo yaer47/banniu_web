@@ -2,6 +2,11 @@
  * Created by zyy on 2016/12/28.
  */
 
+String.prototype.endWith=function(endStr){
+    var d=this.length-endStr.length;
+    return (d>=0&&this.lastIndexOf(endStr)==d)
+}
+
 YX.fn.initalAt = function () {
     var jeremy = decodeURI("J%C3%A9r%C3%A9my") // Jérémy
     var names = ["Jacob","Isabella","Ethan","Emma","Michael","Olivia","Alexander","Sophia","William","Ava","Joshua","Emily","Daniel","Madison","Jayden","Abigail","Noah","Chloe","你好","你你你", jeremy, "가"];
@@ -9,45 +14,81 @@ YX.fn.initalAt = function () {
     this.at_config = {
         at: "@",
         data: names,
-        callbacks: {
-            /*  What to do before insert item's value into inputor.
-
-             @param value [String] content to insert
-             @param $li [jQuery Object] the chosen item */
-            before_insert: function(value, $li) {
-                return value;
-            },
-            // matcher: function(flag, subtext, should_start_with_space) {
-            //         return subtext;
+        startWithSpace: false,
+        callbacks:{
+            // matcher: function(flag, subtext, should_startWithSpace, acceptSpaceBar) {
+            //     var _a, _y, match, regexp, space;
+            //     flag = flag.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+            //     // if (should_startWithSpace) {
+            //     //     flag = '(?:^|\\s)' + flag;
+            //     // }
+            //     _a = decodeURI("%C3%80");
+            //     _y = decodeURI("%C3%BF");
+            //     space = acceptSpaceBar ? "\ " : "";
+            //     regexp = new RegExp(flag + "([A-Za-z" + _a + "-" + _y + "0-9_" + space + "\'\.\+\-]*)$|" + flag + "([^\\x00-\\xff]*)$", 'gi');
+            //     match = regexp.exec(subtext);
+            //     if (match) {
+            //         return match[2] || match[1];
+            //     } else {
+            //         return null;
+            //     }
             // },
-            /* Filter data by matched string.
-             @param query [String] Matched string.
-             @param data [Array] data list
-             @param search_key [String] key char for seaching.
-
-             @return [Array] result data.*/
             filter: function(query, data, search_key) {
                 var arr=[]
                 for(var i=0;i<data.length;i++){
                     if((query==""&&data[i].name!="")||data[i].name.indexOf(query) >= 0||data[i].fullname.indexOf(query)>=0)
-                        arr.push(data[i].fullname)
+                        arr.push(data[i].name)
                 }
                 return arr;
+            },
+            sorter: function(query, items, searchKey){
+                return items
+            },
+            beforeReposition: function(offset){
+                var d= window.parent.document.getElementById("nim_iframe");
+                var t = d.offsetTop;
+                var l= d.offsetLeft;
+                // var top = this.imIframe.contentWindow.document.body.offsetTop;
+                offset.top -= t;
+                offset.left -= l;
+            },
+            tplEval: function(tpl, map) {
+                var error, template;
+                template = tpl;
+                try {
+                    if (typeof tpl !== 'string') {
+                        template = tpl(map);
+                    }
+                    return template.replace(/\$\{([^\}]*)\}/g, function(tag, key, pos) {
+                        return map[key];
+                    });
+                } catch (error1) {
+                    error = error1;
+                    return "";
+                }
+            },
+            beforeInsert: function(value, $li, e){
+                return value;
             }
         }
     }
     this.$messageText = $('#messageText').atwho(this.at_config);
     this.$messageText.caret('pos', 0);
-    this.$messageText.focus().atwho('run');
 }
 
-YX.fn.resetAt = function (data) {
+YX.fn.resetAt = function (members) {
+    var data = $.map(members,function(value,i) {
+        var user= this.cache.getUserFromId(value.account),
+            avatar = user.userIcon?user.userIcon:"images/default-icon.png",
+            nick = user.workNick,
+            fullname = user.fullNamePinyin
+        return {'id': value.account, 'name':nick, 'fullname':fullname, 'icon':avatar};
+    }.bind(this));
+
     this.at_config.data= data;
-    this.at_config.insertTpl= '${name}';
-    this.at_config.displayTpl= "<li>${name}${fullname}</li>";
+    this.at_config.insertTpl= '@${name}';
+    this.at_config.displayTpl= "<li>${name}</li>";
     this.$messageText = $('#messageText').atwho(this.at_config);
-    // this.$messageText.caret('pos', 47);
-    // this.$messageText.focus().atwho('run');
 }
 
 YX.fn.atFunc = function () {
@@ -69,6 +110,19 @@ YX.fn.showAtList = function (str, e) {
         that.$atList.addClass("hide")
         document.onclick=null;
     }
+}
+
+YX.fn.insertAtToText = function () {
+    var $curLi = $('#at-view-64 li.cur')
+    var text = $curLi.text()
+    this.getTeamMembers(this.crtSessionAccount, function (members) {
+        for(var i=0; i<members.length; i++){
+            var user= this.cache.getUserFromId(members[i].account)
+            if(user.workNick==text&&!this.atIds.contains(members[i].account)){
+                this.atIds.push(members[i].account)
+            }
+        }
+    }.bind(this))
 }
 
 YX.fn.onTextAreaInputChanged = function (e) {

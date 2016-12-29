@@ -187,12 +187,13 @@ function buildSessionMsg(msg) {
  * @return {string} str
  */
 function getMessage(msg) {
+    var custm= msg.custom;
     var str = '',
         url = msg.file ? _$escape(msg.file.url) : '',
         sentStr = (msg.from!==userUID)?"收到":"发送";
     switch (msg.type) {
         case 'text':
-            var re = /(http:\/\/[\w.\/]+)(?![^<]+>)/gi; // 识别链接
+            var re = /(http(s:|:)\/\/[\w.\/]+)(?![^<]+>)/gi; // 识别链接
             str = _$escape(msg.text);
             str = str.replace(re, "<a href='$1' target='_blank'>$1</a>");
 

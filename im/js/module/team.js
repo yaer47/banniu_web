@@ -74,15 +74,30 @@ YX.fn.buildTeams = function(id) {
  * 主动去拿群列表
  */
 YX.fn.getTeamMembers = function (id,callback) {
-    var that = this
-    this.mysdk.getTeamMembers(id, function (err,obj) {
-    	if(!err){
-        	that.cache.setTeamMembers(id,obj)
-        	callback()
-    	}else{
-    		alert(err.message)
-    	}
-    })
+    // var that = this
+    // this.mysdk.getTeamMembers(id, function (err,obj) {
+    // 	if(!err){
+    //     	that.cache.setTeamMembers(id,obj)
+    //     	callback()
+    // 	}else{
+    // 		alert(err.message)
+    // 	}
+    // })
+
+	var that = this
+	var memberContent = this.cache.getTeamMembers(id)
+	if(memberContent)
+		callback(memberContent.members)
+	else{
+		this.mysdk.getTeamMembers(id, function (err,obj) {
+			if(!err){
+				that.cache.setTeamMembers(id,obj)
+				callback(that.cache.getTeamMembers(id).members)
+			}else{
+				alert(err.message)
+			}
+		})
+	}
 }
 /**
  * 点击群组列表头像
@@ -117,7 +132,7 @@ YX.fn.showTeamInfo = function() {
 				that.$teamInfoContainer.removeClass("normal").find('.j-advanced').removeClass("hide")
 			 }
 		}
-		var showMember = function(){
+		var showMember = function(_members){
 			members = that.cache.getTeamMembers(teamId).members
 			var array=[]
 			for(var i = 0; i<members.length; i++){
