@@ -47,6 +47,7 @@ YX.fn.initBase = function () {
 
 	this.$mask = $('#mask')
     this.$sendBtn = $('#sendBtn')
+    this.$contentAtTip = $('#contentAtTip')
 	//左上角信息
 	this.$userPic = $('#userPic')
 	this.$userName = $('#userName')
@@ -180,7 +181,8 @@ YX.fn.deleteSession= function (scene, account) {
 YX.fn.openChatBox = function (account, scene) {
     this.iframeWidth= IFrameResize(1000, 0).width;
     this.$leftPanel.animate({left:'5'},function () {
-
+    this.$sendBtn.addClass('bottom-right-radius')
+    this.$contentAtTip.addClass('hide')
     var info
     this.mysdk.setCurrSession(scene,account)
     this.crtSession = scene+"-"+account
@@ -216,7 +218,8 @@ YX.fn.openChatBox = function (account, scene) {
         // }
 
         //try
-
+        var empty=[]
+        this.resetAt(empty)
         info = this.cache.getUserFromId(account)
         if(info.id == userUID){
             this.$nickName.text("我的手机")
@@ -264,7 +267,13 @@ YX.fn.openChatBox = function (account, scene) {
             this.$chatTitle.find('img').attr('src', "images/normal.png") 
             this.$nickName.text(account) 
         }
-        this.crtSessionTeamType = info? info.type : "normal"   
+        this.crtSessionTeamType = info? info.type : "normal"
+        var $at = this.$sessionsWrap.find('.m-panel li[data-account="'+account+'"] .panel_at')
+        if($at&&$at.is(":visible")==true){
+            this.$contentAtTip.removeClass('hide')
+            var dataId = $at.attr('data-at')
+            this.$contentAtTip.attr("data-contentAt", dataId)
+        }
     }
     this.doPoint()
     // 根据或取聊天记录
@@ -305,7 +314,7 @@ YX.fn.switchPanel = function (evt) {
 
 YX.fn.clearSearchResult = function () {
     this.$searchInput.val("")
-    this.$resultList.html('<p>暂时还没有群哦</p>');
+    this.$resultList.html('<p>暂无搜索结果</p>');
 
 }
 /**
@@ -389,6 +398,7 @@ YX.fn.infoProvider = function(data,type){
                 return;
             }
             var scene = msg.scene
+            info.lastId = msg.idClient
             info.scene = scene
             info.account = msg.target
             info.target = msg.scene+"-"+msg.target
@@ -426,6 +436,9 @@ YX.fn.infoProvider = function(data,type){
                 else{
                     info.showAtTip=false
                 }
+                var $at = this.$sessionsWrap.find('.m-panel li[data-account="'+info.account+'"] .panel_at')
+                if($at&&info.unread!=0)
+                    info.showAtTip=true
                 var teamInfo = this.cache.getTeamById(msg.target)
                 if(teamInfo){
                     info.nick = teamInfo.name

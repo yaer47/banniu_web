@@ -174,27 +174,17 @@ return /******/ (function(modules) { // webpackBootstrap
 			html += '<p class="empty">暂无最近联系人哦</p>';
 		}else{
 			for (i = 0;i<sessions.length;i++) {
-                // info = this.provider(sessions[i],"session");
-	            // if(!info){
-	            //     continue;
-	            // }
-	            // str = ['<li class="panel_item '+(info.crtSession===info.target?'active':'')+'" data-scene="' + info.scene + '" data-account="' + info.account + '">',
-	            //                 '<div class="panel_avatar"><img class="panel_image" src="'+info.avatar+'"/></div>',
-	            //                 '<div class="panel_text">',
-	            //                     '<p class="panel_multi-row">',
-	            //                         '<span class="panel_nick">' +info.nick + '</span>',
-	            //                         '<b class="panel_time">' + info.time + '</b>',
-	            //                     '</p>',
-	            //                     '<p class="panel_multi-row">',
-	            //                         '<span class="panel_lastMsg">' + info.text + '</span>',
-	            //                         info.unread ? '<b class="panel_count">' + info.unread + '</b>':'',
-	            //                     '</p>',
-	            //                 '</div>',
-	            //             '</li>'].join("");
 				info = this.provider(sessions[i],"session");
 				if(!info){
 					continue;
 				}
+				var $panelAt =  $(this._body).find('li[data-account="'+info.account+'"] .panel_at'),
+					atData;
+				if($panelAt&&$panelAt.is(":visible")==true){
+					atData = $panelAt.attr("data-at")
+				}
+				if(!atData)
+					atData = info.lastId
 				str = ['<li class="panel_item '+(info.crtSession===info.target?'active':'')+'" data-scene="' + info.scene + '" data-account="' + info.account + '">',
 					'<div class="panel_avatar"><img class="panel_image" src="'+info.avatar+'"/></div>',
 					'<div class="panel_text">',
@@ -203,6 +193,7 @@ return /******/ (function(modules) { // webpackBootstrap
 					'<b class="panel_time">' + info.time + '</b>',
 					'</p>',
 					'<p class="panel_multi-row">',
+					info.unread&&info.showAtTip?'<b class="panel_at" data-at="'+atData+'">' + "有人@你" + '</b>':'',
 					'<span class="panel_lastMsg">' + info.text + '</span>',
 					info.unread ? '<b class="panel_count">' + info.unread + '</b>':'',
 					'</p>',

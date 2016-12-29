@@ -7,32 +7,14 @@ String.prototype.endWith=function(endStr){
     return (d>=0&&this.lastIndexOf(endStr)==d)
 }
 
-YX.fn.initalAt = function () {
-    var jeremy = decodeURI("J%C3%A9r%C3%A9my") // Jérémy
-    var names = ["Jacob","Isabella","Ethan","Emma","Michael","Olivia","Alexander","Sophia","William","Ava","Joshua","Emily","Daniel","Madison","Jayden","Abigail","Noah","Chloe","你好","你你你", jeremy, "가"];
-
-    this.at_config = {
+YX.fn.initalAt = function (data) {
+    return at_config = {
         at: "@",
-        data: names,
+        data: data,
+        insertTpl: '@${name}',
+        displayTpl: "<li>${name}</li>",
         startWithSpace: false,
         callbacks:{
-            // matcher: function(flag, subtext, should_startWithSpace, acceptSpaceBar) {
-            //     var _a, _y, match, regexp, space;
-            //     flag = flag.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-            //     // if (should_startWithSpace) {
-            //     //     flag = '(?:^|\\s)' + flag;
-            //     // }
-            //     _a = decodeURI("%C3%80");
-            //     _y = decodeURI("%C3%BF");
-            //     space = acceptSpaceBar ? "\ " : "";
-            //     regexp = new RegExp(flag + "([A-Za-z" + _a + "-" + _y + "0-9_" + space + "\'\.\+\-]*)$|" + flag + "([^\\x00-\\xff]*)$", 'gi');
-            //     match = regexp.exec(subtext);
-            //     if (match) {
-            //         return match[2] || match[1];
-            //     } else {
-            //         return null;
-            //     }
-            // },
             filter: function(query, data, search_key) {
                 var arr=[]
                 for(var i=0;i<data.length;i++){
@@ -72,11 +54,13 @@ YX.fn.initalAt = function () {
             }
         }
     }
-    this.$messageText = $('#messageText').atwho(this.at_config);
-    this.$messageText.caret('pos', 0);
 }
 
 YX.fn.resetAt = function (members) {
+    if(!members){
+        this.$messageText.atwho('destroy');
+        return;
+    }
     var data = $.map(members,function(value,i) {
         var user= this.cache.getUserFromId(value.account),
             avatar = user.userIcon?user.userIcon:"images/default-icon.png",
@@ -85,10 +69,8 @@ YX.fn.resetAt = function (members) {
         return {'id': value.account, 'name':nick, 'fullname':fullname, 'icon':avatar};
     }.bind(this));
 
-    this.at_config.data= data;
-    this.at_config.insertTpl= '@${name}';
-    this.at_config.displayTpl= "<li>${name}</li>";
-    this.$messageText = $('#messageText').atwho(this.at_config);
+    this.$messageText = $('#messageText').atwho(this.initalAt(data));
+    this.$messageText.caret('pos', 0);
 }
 
 YX.fn.atFunc = function () {

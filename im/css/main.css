@@ -1247,14 +1247,14 @@ width: 40px;
 
 .m-unread .u-unread{
     position: absolute;
-    top: 2px;
-    left:55px;
-    font-size: 12px;
+    top: -10px;
+    left: 10px;
+    font-size: 8px;
     display: block;
     background-color: #f24c3d;
     text-align: center;
-    line-height: 16px;
-    height: 16px;
+    line-height: 14px;
+    height: 14px;
     padding: 0 5px;
     color: #fff;
     border-radius: 10px;

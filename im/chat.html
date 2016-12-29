@@ -21,9 +21,9 @@
 				<!--<div class="m-devices hide">正在使用云信web版</div>-->
 				<div class="panel" id="switchPanel">
 					<a style="margin-left: 12px" class="box-sizing tc m-unread panel_tab cur" data-type="sessions">
-						<span class="im-glyphicon im-glyphicon-sesion"></span>
+						<span class="im-glyphicon im-glyphicon-sesion"></span><b class="u-unread hide">0</b>
 					</a>
-					<!--<b class="u-unread hide">0</b>-->
+
 					<!--<a class="box-sizing tc panel_tab" data-type="friends"><span class="icon icon-friend"></span></a>-->
 					<a class="box-sizing tc panel_tab" data-type="teams">
 						<span class="im-glyphicon im-glyphicon-group"></span>
@@ -102,7 +102,9 @@
 						<i class="im-glyphicon im-glyphicon-showRight"></i>
 					</div>
 					<div class="chat-content box-sizing" id="chatContent">
+
 					</div>
+					<span id="contentAtTip" class="content-at-tip hide">转到@</span>
 					<div class="chat-mask"></div>
 					<div class="chat-editor bottom-right-radius box-sizing" id="chatEditor" data-disabled="1">
 						<div class="input-area">
