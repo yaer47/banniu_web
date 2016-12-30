@@ -266,7 +266,7 @@ YX.fn.getHistoryMsgs = function (scene,account) {
     if(!!sessions){
         if(sessions.unread>=msgs.length){
             var msgid = (msgs.length>0)?msgs[0].idClient:false
-            this.mysdk.getLocalMsgs(scene,account,msgid,this.getLocalMsgsDone.bind(this))
+            this.mysdk.getLocalMsgs(scene,account,20,msgid,this.getLocalMsgsDone.bind(this))
             return
         }
     }

@@ -100,7 +100,7 @@
 .panel a {
     display: inline-block;
     float: left;
-    margin: 12px 0 12px 8px;
+    margin: 12px 0 0 8px;
 }
 .panel .panel_tab {
     position: relative;

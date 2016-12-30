@@ -147,6 +147,7 @@ var SDKBridge = function (ctr,data) {
 	    	if(sessions[i].scene==="p2p"){
 	    		this.person[sessions[i].to] = true;
 	    	}else{
+
 	    		this.team.push(sessions[i].to);
 	    		var arr = getAllAccount(sessions[i].lastMsg);
 	    		if(!arr){
@@ -156,6 +157,7 @@ var SDKBridge = function (ctr,data) {
 	    			this.person[arr[j]] = true;
 	    		}
 	    	}
+	    	this.addAtDataToSession(sessions[i], true);
 		}
 	};
 	
@@ -163,6 +165,7 @@ var SDKBridge = function (ctr,data) {
 		var id = session.id||"";
 		var old = this.cache.getSessions();
 		this.cache.setSessions(this.nim.mergeSessions(old, session));
+		this.addAtDataToSession(session, false);
 		this.controller.buildSessions(id);			
 	};
 
@@ -360,6 +363,48 @@ var SDKBridge = function (ctr,data) {
 /********** 这里通过原型链封装了sdk的方法，主要是为了方便快速阅读sdkAPI的使用 *********/
 
 
+SDKBridge.prototype.addAtDataToSession = function(session, isGetHistory) {
+	var func = function(err,data) {
+		setTimeout(function() { if (!err) {
+			var msgs = data.msgs
+			for (var i = 0; i < msgs.length; i++) {
+				if (msgs[i].scene === "team") {
+					var cus = msgs[i].custom;
+					if (cus && cus != "") {
+						cus = JSON.parse(cus)
+						if (cus.contains(userUID)) {
+							session.atMsgData = msgs[i].idClient
+						}
+					}
+				}
+			}
+
+		} else {
+			alert("获取历史消息失败")
+		}}, 0)
+	}
+
+	if(isGetHistory){
+		if(0==session.unread){
+			return
+		}else{
+			this.getLocalMsgs(session.scene,session.to
+				,session.unread,session.lastMsg.idClient, func.bind(this))
+		}
+	}else{
+		if(session.lastMsg.scene==="team"){
+			var cus = session.lastMsg.custom
+			if(cus&&cus!=""){
+				cus = JSON.parse(cus)
+				if(cus.contains(userUID)){
+					session.atMsgData = session.lastMsg.idClient
+				}
+			}
+		}
+	}
+
+}
+
 SDKBridge.prototype.deleteSession= function(scene, account, callBack) {
 	this.nim.deleteLocalSession({
 		id:scene+'-'+account,
@@ -487,20 +532,20 @@ SDKBridge.prototype.getHistoryMsgs = function(param){
 /**
  * 获取本地历史记录消息  
  */
-SDKBridge.prototype.getLocalMsgs = function(scene,to,lastMsgId,done){
+SDKBridge.prototype.getLocalMsgs = function(scene,to,count,lastMsgId,done){
 	if(lastMsgId){
 		this.nim.getLocalMsgs ({
 			scene:scene,
 			to:to,
 			lastMsgIdClient:lastMsgId,
-			limit:20,
+			limit:count,
 			done:done
 		});
 	}else{
 		this.nim.getLocalMsgs ({
 			scene:scene,
 			to:to,
-			limit:20,
+			limit:count,
 			done:done
 		});
 	}

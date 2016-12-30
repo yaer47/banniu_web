@@ -192,32 +192,9 @@ YX.fn.openChatBox = function (account, scene) {
     $('#teamInfoContainer') && $('#teamInfoContainer').addClass('hide')
     this.$devices && this.$devices.addClass('hide')
     this.$cloudMsgContainer && this.$cloudMsgContainer.addClass('hide')
-    //退群的特殊UI
-    // this.$rightPanel.find(".u-chat-notice").addClass("hide")
-    // this.$rightPanel.find(".chat-mask").addClass("hide")
-    // // this.$rightPanel.removeClass('hide')
-    // this.$rightPanel.fadeIn("slow")
-    // this.$chatVernier.fadeIn("slow")
-
-
-
-        // this.$leftPanel.find(".u-chat-notice").addClass("hide")
-    // this.$leftPanel.find(".chat-mask").addClass("hide")
-    // this.$leftPanel.removeClass('hide')
     this.$messageText.val('')
-    this.atIds = []
     //根据帐号跟消息类型获取消息数据
     if(scene=="p2p"){
-        //info = this.cache.getUserById(account)
-        // if(info.account == userUID){
-        //     this.$nickName.text("我的手机")
-        //     this.$chatTitle.find('img').attr('src', "images/myPhone.png")
-        // }else{
-        //     this.$nickName.text(this.getNick(account))
-        //     this.$chatTitle.find('img').attr('src', getAvatar(info.avatar))
-        // }
-
-        //try
         var empty=[]
         this.resetAt(empty)
         info = this.cache.getUserFromId(account)
@@ -233,19 +210,9 @@ YX.fn.openChatBox = function (account, scene) {
         this.$teamInfo && this.$teamInfo.addClass('hide')
     }else{
     	//群聊
+        var s = this.cache.findSession(crtSession)
+        if(s)s.atMsgData= null
         info = this.cache.getTeamById(account)
-
-        // var team=this.cache.getTeamMembers(account)
-        //     ,members
-        // if(team){
-        //     members= team.members
-        //     this.resetAt(members)
-        // }else{
-        //     this.getTeamMembers(account, function () {
-        //         members= this.cache.getTeamMembers(account).members
-        //         this.resetAt(members)
-        //     }.bind(this))
-        // }
         this.getTeamMembers(account, function (members) {
             this.resetAt(members)
         }.bind(this))
@@ -260,10 +227,6 @@ YX.fn.openChatBox = function (account, scene) {
             }
             this.$nickName.text(info.name) 
         }else{
-            // this.$rightPanel.find(".u-chat-notice").removeClass("hide")
-            // this.$rightPanel.find(".chat-mask").removeClass("hide")
-            // this.$leftPanel.find(".u-chat-notice").removeClass("hide")
-            // this.$leftPanel.find(".chat-mask").removeClass("hide")
             this.$chatTitle.find('img').attr('src', "images/normal.png") 
             this.$nickName.text(account) 
         }
@@ -398,7 +361,6 @@ YX.fn.infoProvider = function(data,type){
                 return;
             }
             var scene = msg.scene
-            info.lastId = msg.idClient
             info.scene = scene
             info.account = msg.target
             info.target = msg.scene+"-"+msg.target
@@ -428,17 +390,18 @@ YX.fn.infoProvider = function(data,type){
                 //群组
                 var ids = []
                 var cus = msg.custom
+                info.atAccountData=null
                 if(cus&&cus!=""){
                     ids = JSON.parse(cus)
-                    ids.contains(userUID)&&info.unread!=0?
-                        info.showAtTip=true:info.showAtTip=false
-                }
-                else{
+                    if(ids.contains(userUID)&&info.unread!=0){
+                        info.showAtTip=true
+                        info.atAccountData = msg.idClient
+                    }else{
+                        info.showAtTip=false
+                    }
+                } else{
                     info.showAtTip=false
                 }
-                var $at = this.$sessionsWrap.find('.m-panel li[data-account="'+info.account+'"] .panel_at')
-                if($at&&info.unread!=0)
-                    info.showAtTip=true
                 var teamInfo = this.cache.getTeamById(msg.target)
                 if(teamInfo){
                     info.nick = teamInfo.name

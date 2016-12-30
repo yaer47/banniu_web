@@ -237,6 +237,13 @@ var Cache = (function(){
 		this.sessions = sessions;
 	};
 
+	Cache.prototype.setSession = function(session){
+		for(var i=0; i<this.sessions.length; i++){
+			if(this.sessions[i].to==session.to)
+				this.sessions[i]=session
+		}
+	};
+
 	/**
 	 * 获取当前会话
 	 * @return {Array} 会话集合
