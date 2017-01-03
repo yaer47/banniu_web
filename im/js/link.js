@@ -10,6 +10,9 @@ var SDKBridge = function (ctr,data) {
      	// window.location.href = '../main.html';
     	return;
 	}
+	this.onsyncdoned = false;
+	this.onsessiondoned = false;
+	this.teamSessionAccountLst = [];
 	//缓存需要获取的用户信息账号
 	this.person = {};
 	//缓存需要获取的群组账号
@@ -142,6 +145,7 @@ var SDKBridge = function (ctr,data) {
 
 	function onSessions(sessions){
 		var old = this.cache.getSessions();
+		var hasUnread= false;
 		this.cache.setSessions(this.nim.mergeSessions(old, sessions));
 		for(var i = 0;i<sessions.length;i++){
 	    	if(sessions[i].scene==="p2p"){
@@ -156,16 +160,22 @@ var SDKBridge = function (ctr,data) {
 	    		for(var j = arr.length -1; j >= 0; j--){
 	    			this.person[arr[j]] = true;
 	    		}
-	    	}
-	    	this.addAtDataToSession(sessions[i], true);
+	    		if(sessions[i].unread!=0){
+					hasUnread = true;
+					this.updataAtDataToSession(sessions[i], true);
+				}
+			}
 		}
+		if(!hasUnread)
+			this.onsessiondoned = true;
 	};
 	
 	function onUpdatesession(session){
 		var id = session.id||"";
 		var old = this.cache.getSessions();
+		if (session.scene === "team")
+			this.updataAtDataToSession(session, false);
 		this.cache.setSessions(this.nim.mergeSessions(old, session));
-		this.addAtDataToSession(session, false);
 		this.controller.buildSessions(id);			
 	};
 
@@ -180,9 +190,7 @@ var SDKBridge = function (ctr,data) {
 	};
 
 	function onSyncDone() {
-		console.log('消息同步完成');	
- 		var ctr = this.controller;
-	    ctr.initInfo(this.person,this.team);
+		this.onsessiondoned?this.onReadyToInital():this.onsyncdoned=true
 	};
 	// function onSyncTeamMembersDone() {
 	// 	console.log('群成员同步完成');
@@ -362,37 +370,43 @@ var SDKBridge = function (ctr,data) {
 
 /********** 这里通过原型链封装了sdk的方法，主要是为了方便快速阅读sdkAPI的使用 *********/
 
+SDKBridge.prototype.onReadyToInital = function () {
+	this.onsessiondoned = this.onsyncdoned = false;
+	console.log('消息同步完成');
+	var ctr = this.controller;
+	ctr.initInfo(this.person,this.team);
+}
 
-SDKBridge.prototype.addAtDataToSession = function(session, isGetHistory) {
+SDKBridge.prototype.updataAtDataToSession = function(session, isGetHistory) {
 	var func = function(err,data) {
 		setTimeout(function() { if (!err) {
 			var msgs = data.msgs
 			for (var i = 0; i < msgs.length; i++) {
-				if (msgs[i].scene === "team") {
-					var cus = msgs[i].custom;
-					if (cus && cus != "") {
-						cus = JSON.parse(cus)
-						if (cus.contains(userUID)) {
-							session.atMsgData = msgs[i].idClient
-						}
+				var cus = msgs[i].custom;
+				if (cus && cus != "") {
+					cus = JSON.parse(cus)
+					if (cus.contains(userUID)) {
+						session.atMsgData = msgs[i].idClient
 					}
 				}
 			}
-
+			var index= $.inArray(session.to,this.teamSessionAccountLst)
+			if(index!=-1)
+				this.teamSessionAccountLst.splice(index,1);
+			if(this.teamSessionAccountLst.length==0){
+				this.onsyncdoned?this.onReadyToInital():this.onsessiondoned= true;
+			}
 		} else {
 			alert("获取历史消息失败")
-		}}, 0)
+		}}.bind(this), 0)
 	}
 
 	if(isGetHistory){
-		if(0==session.unread){
-			return
-		}else{
-			this.getLocalMsgs(session.scene,session.to
-				,session.unread,session.lastMsg.idClient, func.bind(this))
-		}
+		this.teamSessionAccountLst.push(session.to);
+		this.getLocalMsgs(session.scene,session.to
+			,session.unread,"", func.bind(this))
 	}else{
-		if(session.lastMsg.scene==="team"){
+		if(0!=session.unread){
 			var cus = session.lastMsg.custom
 			if(cus&&cus!=""){
 				cus = JSON.parse(cus)
@@ -400,6 +414,8 @@ SDKBridge.prototype.addAtDataToSession = function(session, isGetHistory) {
 					session.atMsgData = session.lastMsg.idClient
 				}
 			}
+		}else{
+			session.atMsgData = null
 		}
 	}
 

@@ -188,7 +188,7 @@ return /******/ (function(modules) { // webpackBootstrap
 					'<b class="panel_time">' + info.time + '</b>',
 					'</p>',
 					'<p class="panel_multi-row">',
-					info.unread&&atMsgData?'<b class="panel_at" id="'+atMsgData+'">' + "有人@你" + '</b>':'',
+					info.unread&&atMsgData?'<b class="panel_at" data-at="'+atMsgData+'">' + "有人@你" + '</b>':'',
 					'<span class="panel_lastMsg">' + info.text + '</span>',
 					info.unread ? '<b class="panel_count">' + info.unread + '</b>':'',
 					'</p>',

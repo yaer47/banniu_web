@@ -210,8 +210,7 @@ YX.fn.openChatBox = function (account, scene) {
         this.$teamInfo && this.$teamInfo.addClass('hide')
     }else{
     	//群聊
-        var s = this.cache.findSession(crtSession)
-        if(s)s.atMsgData= null
+
         info = this.cache.getTeamById(account)
         this.getTeamMembers(account, function (members) {
             this.resetAt(members)
@@ -234,14 +233,33 @@ YX.fn.openChatBox = function (account, scene) {
         var $at = this.$sessionsWrap.find('.m-panel li[data-account="'+account+'"] .panel_at')
         if($at&&$at.is(":visible")==true){
             this.$contentAtTip.removeClass('hide')
+            this.$contentAtTip.bind('click', function () {
+                var $tip = $('.view-box #'+this.$contentAtTip.attr("data-contentAt")+'')
+                if ($tip) {
+                    this.$chatContent.scrollTo($tip)
+                }
+            }.bind(this))
             var dataId = $at.attr('data-at')
             this.$contentAtTip.attr("data-contentAt", dataId)
+            this.$chatContent.bind("scroll", function () {
+                var $tip = $('.view-box #'+this.$contentAtTip.attr("data-contentAt")+'')
+                if ($tip){
+                    if(!(($('.view-box').scrollTop()>($tip.offset().top+$tip.outerHeight()-54))||
+                        (($('.view-box').scrollTop()+$('.view-box').height())<$tip.offset().top+54))){
+                        this.$contentAtTip.addClass('hide')
+                        this.$contentAtTip.attr("data-contentAt", "")
+                    }
+
+                }
+
+            }.bind(this))
+
+
         }
     }
     this.doPoint()
     // 根据或取聊天记录
     this.getHistoryMsgs(scene,account)
-
     }.bind(this));
 }
 
